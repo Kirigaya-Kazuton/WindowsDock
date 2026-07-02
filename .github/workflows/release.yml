@@ -1,0 +1,57 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on tags like v1.0, v2.3.4
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore src/WindowsDock.GUI/WindowsDock.GUI.csproj
+
+      - name: Build (Release)
+        run: dotnet build src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release --no-restore
+
+      - name: Publish (single-file)
+        run: dotnet publish src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release -o publish /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --no-build
+
+      - name: Zip artifact
+        run: Compress-Archive -Path publish/* -DestinationPath WindowsDock-${{ github.ref_name }}.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WindowsDock ${{ github.ref_name }}
+          body: |
+            ## WindowsDock ${{ github.ref_name }}
+
+            ### Download
+            - **Windows 10/11**: `WindowsDock-${{ github.ref_name }}.zip`
+
+            ### System Requirements
+            - Windows 10 (build 1809+) or Windows 11
+            - .NET 8 Runtime (included in the single-file publish)
+
+            ### Installation
+            1. Download the `.zip` file
+            2. Extract to a folder (e.g. `C:\Program Files\WindowsDock`)
+            3. Run `WindowsDock.GUI.exe`
+            4. Press `Win+W` to toggle the dock
+
+            ### Changelog
+            See [CHANGELOG](./CHANGELOG.md) for details.
+          files: WindowsDock-${{ github.ref_name }}.zip
+          draft: false
+          prerelease: false

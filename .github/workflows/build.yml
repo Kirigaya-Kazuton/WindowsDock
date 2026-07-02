@@ -1,0 +1,35 @@
+name: Build (CI)
+
+on:
+  push:
+    branches: [ "main", "feat/*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore src/WindowsDock.GUI/WindowsDock.GUI.csproj
+
+      - name: Build
+        run: dotnet build src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release --no-restore
+
+      - name: Publish (portable)
+        run: dotnet publish src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release -o publish --no-build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WindowsDock-latest
+          path: publish/
