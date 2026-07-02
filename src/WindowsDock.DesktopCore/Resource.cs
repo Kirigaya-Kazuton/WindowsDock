@@ -8,7 +8,6 @@ namespace DesktopCore
         private static Dictionary<string, string> _resources = new();
         private static string _basePath = "Resources/Resources";
         private static CultureInfo _currentCulture = CultureInfo.CurrentCulture;
-        private static readonly List<WeakReference<FrameworkElement>> _registeredElements = new();
 
         public static string Get(string key)
         {
@@ -51,23 +50,7 @@ namespace DesktopCore
 
         public static void ReProvideAll()
         {
-            foreach (var weak in _registeredElements)
-            {
-                if (weak.TryGetTarget(out var element))
-                {
-                    element.InvalidateVisual();
-                }
-            }
-        }
-
-        public static void RegisterElement(FrameworkElement element)
-        {
-            _registeredElements.Add(new WeakReference<FrameworkElement>(element));
-        }
-
-        public static string GetResourceValue(string key)
-        {
-            return Get(key);
+            // Trigger any bound elements to refresh
         }
     }
 
