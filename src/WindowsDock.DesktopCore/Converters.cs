@@ -10,8 +10,6 @@ namespace DesktopCore.Data
         {
             if (value is DateTime dt)
                 return dt.ToString("g", culture);
-            if (value is DateTime? dtn && dtn.HasValue)
-                return dtn.Value.ToString("g", culture);
             return "";
         }
 
