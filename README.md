@@ -1,163 +1,254 @@
 # WindowsDock
 
-Mac OS X like application launcher.
+> A macOS-style dock for Windows 10 and Windows 11.
 
-![Preview](http://www.neptuo.com/Content/Images/Projects/windows-dock-01.jpg)
+WindowsDock brings the elegant macOS dock experience to your Windows desktop. It sits at the bottom of your screen, provides quick access to your favorite applications, and features the iconic glass/acrylic blur effect, icon magnification, running app indicators, and dark/light theme support.
 
-### Build 1.2.22
-  * Minor fix (that ugly border around shortcut on main panel vanished)
+![WindowsDock Preview](https://raw.githubusercontent.com/anomalyco/WindowsDock/feat/macos-dock-redesign/assets/preview.png)
 
-### Build 1.2.21 
-  * Global hotkeys for shortcuts (for only in combination with Windows key)
+---
 
-### Build 1.1.20
-  * Configuration for small bubbles on top of shortcuts on main panel
-  * Basic setting for shortcut icon size
+## ✨ Features
 
-### Build 1.1.19
-  * Taskbar height + posibility to use this as offset from bottom
+| Feature | macOS Dock | WindowsDock |
+|---|---|---|
+| Acrylic blur background | ✅ | ✅ via `SetWindowCompositionAttribute` |
+| Icon magnification on hover | ✅ | ✅ smooth `CircleEase` animation |
+| Reflection effect | ✅ | ✅ gradient opacity mirror |
+| Running app indicators | ✅ | ✅ blue dot + glow |
+| Dark / Light mode | ✅ | ✅ auto-detects Windows theme |
+| Trash / Finder icons | ✅ | ✅ |
+| Drag & drop to add apps | ✅ | ✅ |
+| Auto-hide | ✅ | ✅ spring animation |
+| Global hotkey (Win+W) | ✅ | ✅ via `RegisterHotKey` |
+| Win11 rounded corners | ✅ | ✅ `DWMWA_WINDOW_CORNER_PREFERENCE` |
+| Per-monitor DPI | ✅ | ✅ `PerMonitorV2` |
+| Customizable icon size | ✅ | ✅ |
+| Configuration file | ❌ | `%APPDATA%/WindowsDock/config.json` |
+| Multi-language | ❌ | English + Portuguese (extensible) |
 
-### Build 1.1.18
-  * Dockable WindowsDock, you can dock main panel to one edge of screen and make it always visible
-  * Some minor fixes
+### Planned
+- [ ] Configuration window (GUI settings editor)
+- [ ] TextNotes extension with alarms
+- [ ] Script launcher
+- [ ] Quick folder browser
+- [ ] Desktop items browser
+- [ ] Direct download installer
 
-### Build 1.0.17
-  * Colors for application buttons (Config+Close)
-  * Posibility to hide them from main panel
-  * Context menu on main panel as substitute from these buttons
+---
 
-### Build 1.0.16
+## 📋 System Requirements
 
-  * KeyShortcut to show desktop in Explorer
+| Requirement | Minimum | Recommended |
+|---|---|---|
+| **OS** | Windows 10 build 1809 | Windows 11 |
+| **.NET** | .NET 8 Runtime | .NET 8 SDK |
+| **RAM** | 256 MB | 512 MB |
+| **Disk** | 10 MB | 20 MB |
+| **Display** | 1366×768 | 1920×1080+ |
 
-### Build 1.0.15
+**Compatibility:**
+- ✅ Windows 10 (build 1809+) — Acrylic via blur behind
+- ✅ Windows 11 — Acrylic + native rounded corners + Mica
+- ✅ Multi-monitor (DPI-aware)
 
-  * Added support for pin to right and bottom edge of primary screen
+---
 
-### Build 1.0.14
+## 🚀 Installation
 
-  * Posibility to configure activation key (Win+selected key)
-  * App restart after locale change nearly not needed (with exception for some resources - like datetime pattern)
-  * Partial internal configuration changes
+### Option 1: Download (pre-built)
+> Coming soon — an automated installer is being prepared.
 
-### Build 1.0.13
+### Option 2: Build from source
 
-  * FIXED: Program doesn't crash when one instance is running and you try to run another (caused by binding global hotkey)
-  * Minor internal changes
+**Prerequisites:**
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (or newer)
+- Visual Studio 2022 (optional, recommended)
 
-### Build 1.0.12
+**Steps:**
 
-  * Translated items in configuration dropdown lists
+```powershell
+# Clone the repository
+git clone https://github.com/anomalyco/WindowsDock.git
+cd WindowsDock
 
-### Build 1.0.11
+# Switch to the redesign branch
+git checkout feat/macos-dock-redesign
 
-  * FIXED: Restart not needed after position change (left,top)
-  * Minor configuration changes
+# Restore dependencies
+dotnet restore src/WindowsDock.GUI/WindowsDock.GUI.csproj
 
-### Build 1.0.10
+# Build
+dotnet build src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release
 
-  * Add support for setuping border, thickness and color
-  * Border radius can also be set from configuration window
+# Output will be at:
+# src/WindowsDock.GUI/bin/Release/net8.0-windows/WindowsDock.GUI.exe
+```
 
-### Build 1.0.9
+**Using Visual Studio 2022:**
+1. Open `WindowsDock.sln`
+2. Set `WindowsDock.GUI` as startup project
+3. Build & Run (F5)
 
-  * Added possibility to change (or disable) application hotkeys (Win+W remains as application activation key, but yout can change T,S,B,D,X and Z keys to run extensions and etc.
+### Option 3: One-click publish
+```powershell
+dotnet publish src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release -o ./publish
+```
 
-### Build 1.0.8
+---
 
-  * Added possibility to place dock on left edge of primary screen
-  * Added window align to screen edge + offset setup
+## 🎮 Usage
 
-### Build 1.0.7
+### First Run
+1. Launch `WindowsDock.GUI.exe`
+2. The dock appears at the **bottom center** of your screen
+3. Toggle visibility with **`Win + W`**
 
-  * Add support for localization, right now we support Czech and English, but you can easily add support for another language, simply open application installation folder, go to Resources a then copy one of files there and name it 'Resources' + underscore + language (and country) code, like 'Resources_cs.txt' or 'Resources_fr-FR.txt'. If you do so, please send to me localized file and will add it to the application
+### Adding Shortcuts
+- **Drag & drop** any file, folder, or `.exe` onto the dock
+- The icon is automatically extracted from the file
 
-### Build 1.0.6
+### Running Applications
+- **Left-click** any icon to launch the application
+- A **blue dot** below the icon indicates the app is currently running
 
-  * Space added as posible key to shortcut assignment
-  * Some minor fixes
+### Auto-Hide
+- Enable auto-hide in config: the dock slides away when not in use
+- Hover near the bottom of the screen to reveal it
 
-### Build 1.0.5
+### Built-in Dock Icons
+| Icon | Action |
+|---|---|
+| **Finder** (left) | Opens File Explorer |
+| **Trash** (right) | Opens Recycle Bin |
 
-  * Fix of show/hide bug
-  * Removed opacity (use alpha channel in background color
-  * After start "autohide"
+---
 
-### Build 1.0.4
+## ⌨️ Keyboard Shortcuts
 
-  * Some minor fixes
+| Shortcut | Action |
+|---|---|
+| `Win + W` | Toggle dock visibility |
+| `Win + Z` | Open configuration (coming soon) |
+| `Win + X` | Close WindowsDock |
 
-### Build 1.0.3
+*(Custom key bindings are stored in `config.json`)*
 
-  * Hotkeys in Shortcuts edit
-    * ENTER for opening shortcut detail (also DOUBLECLICK works)
-    * DELETE for deleting shortcut
-    * SHIFT+UP/DOWN for moving shortcut
-  * Working directory can be set for shortcut+script (defaults to file directory)
+---
 
-### Build 1.0.2
+## ⚙️ Configuration
 
-  * Some minor fixes, released in 1.0.3
+Settings are stored in `%APPDATA%/WindowsDock/config.json`.
 
-### Build 1.0.1
+### Example config:
+```json
+{
+  "shortcutIconSize": 48,
+  "enableMagnification": true,
+  "magnificationFactor": 1.3,
+  "enableReflection": true,
+  "reflectionOpacity": 0.2,
+  "runIndicatorsEnabled": true,
+  "enableAcrylic": true,
+  "autoTheme": true,
+  "themeMode": "Auto",
+  "autoHiding": false,
+  "opacity": 0.85,
+  "activationKey": "W"
+}
+```
 
-  * Hotkeys
-    * Dock can be activated pressing *Win+W*
-    * each shortcut can have hotkey (letters+num) to run that shortcut
-    * shortcuts can share same hotkey to run multiple programs pressing single key
-    * Extensions shortcuts
-      * Browser - B
-      * Desktop - D
-      * Scripts - S
-      * Textnotes - T
-  * Configuration
-    * buttons for manual saving/loading configuration
-    * button for replacing current configuration
-    * button for copying current configuration file
-    * HiddenOffset - number of pixels that are always visible to top of display
-  * Issues
-    * 1 - solved
-    * 2 - solved
+### Key settings:
+| Property | Default | Description |
+|---|---|---|
+| `shortcutIconSize` | `48` | Icon size in pixels (24–128) |
+| `enableMagnification` | `true` | Icon scale-up on hover |
+| `magnificationFactor` | `1.3` | Scale multiplier (1.0 = off) |
+| `enableReflection` | `true` | Reflection below icons |
+| `reflectionOpacity` | `0.2` | Reflection strength |
+| `runIndicatorsEnabled` | `true` | Show running app dots |
+| `enableAcrylic` | `true` | Translucent blur background |
+| `autoTheme` | `true` | Follow Windows theme |
+| `themeMode` | `"Auto"` | `"Light"`, `"Dark"`, or `"Auto"` |
+| `autoHiding` | `false` | Auto-hide when not used |
+| `opacity` | `0.85` | Dock opacity (0–1) |
+| `activationKey` | `"W"` | Toggle hotkey (combined with Win) |
 
+---
 
-### Build 1.0.0
+## 🌐 Localization
 
-## Program shortcuts
+WindowsDock supports multiple languages. To add your language:
 
-  * simply drag and drop any file on dock and get a shortcut
-  * or open configuration window and manage shortcuts more advanced
-  * not only program, but even any file can be pinned as shortcut
+1. Copy `src/WindowsDock.GUI/Resources/Resources.txt` as `Resources_[code].txt`
+   (e.g. `Resources_fr-FR.txt` or `Resources_de.txt`)
+2. Translate the values after `=` in each line
+3. Rebuild the application
 
-## Extensions
+**Currently supported:**
+| Language | File |
+|---|---|
+| English | `Resources.txt` |
+| Portuguese (BR) | `Resources_pt-BR.txt` |
 
-  * Textnotes & alarms
-    * management for simple textnotes
-    * support for assigning alarm for each textnote
-  * Scripts
-    * management for creating shortcuts for favourite scripts
-  * Browser
-    * simple folder browser
-    * write C:\ and you will get all folders under C:\, then click on item or pres arrow up/down and enter to navigate to selected folder, then enter again for execute default command
-    * browser has support for user defined commands (one can be selected as default - activated on enter press) - buttons on right side. In Confiration, section Commands can be these commands managed, in args field {0} is replaced by selected folder.
-  * Desktop browser
-    * this extension enables you to browse your items on desktop
+---
 
-## Rich configuration
-  * Background color
-  * Hide/Show duration
-  * Opacity
-  * Alarm sound
+## 🏗️ Project Architecture
 
-## Screens
+```
+src/
+├── WindowsDock.DesktopCore/       # Base framework (replaces old DesktopCore.dll)
+│   ├── NotifyPropertyChanged.cs   # INotifyPropertyChanged base class
+│   ├── Resource.cs                # Localization engine
+│   ├── HotkeyHelper.cs            # Global hotkeys via P/Invoke
+│   ├── DockBarHelper.cs           # Screen edge docking
+│   ├── WindowHelper.cs            # Window management utilities
+│   └── Converters.cs              # WPF value converters
+│
+├── WindowsDock.Core/              # Business logic & data models
+│   ├── Models/                    # Shortcut, TextNote, Script, etc.
+│   ├── Helpers/                   # Position, Icon, Browse, Desktop helpers
+│   ├── Services/                  # Config, Hotkey services
+│   └── Manager.cs                 # Central state management
+│
+└── WindowsDock.GUI/               # WPF user interface
+    ├── MainWindow.xaml/.cs        # The macOS-style dock window
+    ├── Controls/DockIconControl   # Custom render: magnification + reflection + indicator
+    ├── Effects/AcrylicHelper.cs   # Acrylic blur (Win10/11)
+    ├── Win32/NativeMethods.cs     # P/Invoke declarations
+    ├── Themes/                    # Light and Dark theme resources
+    └── Resources/                 # Localization files
+```
 
-### Build 1.0.12
+---
 
-![Build 1.0.12](http://i51.tinypic.com/2mot25u.png)
+## ❓ FAQ / Troubleshooting
 
-### Build 1.0.1
+**Q: The acrylic/blur effect doesn't work.**
+A: Ensure you're on Windows 10 build 1809+ or Windows 11. The effect uses `SetWindowCompositionAttribute` which requires these versions.
 
-![Build 1.0.1](http://i55.tinypic.com/2mo5bh3.png)
+**Q: The dock doesn't appear after launch.**
+A: Press `Win + W` to toggle visibility. Check if auto-hide is enabled in config.
 
-### Build 1.0.0
+**Q: Shortcut icons are not showing.**
+A: WindowsDock extracts icons using `System.Drawing.Icon.ExtractAssociatedIcon`. Some file types may not have embedded icons.
 
-![Build 1.0.0](http://i55.tinypic.com/9ap7pv.png)
+**Q: Running app indicators are wrong.**
+A: The indicator polls processes by matching the file name (without extension) against running processes. Some apps use different process names than their file names.
+
+**Q: How do I reset all settings?**
+A: Close WindowsDock and delete `%APPDATA%/WindowsDock/config.json`. It will be recreated with defaults on next launch.
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Original project by [neptuo](https://github.com/neptuo)
+- macOS dock design by Apple
+- Built with .NET 8 WPF
