@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- macOS Light Dock colors -->
+    <Color x:Key="DockBackgroundColor">#E8FFFFFF</Color>
+    <Color x:Key="DockBorderColor">#30FFFFFF</Color>
+    <Color x:Key="DockShadowColor">#40000000</Color>
+    <Color x:Key="HighlightColor">#FF007AFF</Color>
+    <Color x:Key="TextPrimaryColor">#FF000000</Color>
+    <Color x:Key="TextSecondaryColor">#80000000</Color>
+    <Color x:Key="SeparatorColor">#40FFFFFF</Color>
+    <Color x:Key="RunningDotColor">#FF007AFF</Color>
+    <Color x:Key="IconBackgroundColor">#00FFFFFF</Color>
+
+    <SolidColorBrush x:Key="DockBackground" Color="{StaticResource DockBackgroundColor}" />
+    <SolidColorBrush x:Key="DockBorder" Color="{StaticResource DockBorderColor}" />
+    <SolidColorBrush x:Key="DockShadow" Color="{StaticResource DockShadowColor}" />
+</ResourceDictionary>

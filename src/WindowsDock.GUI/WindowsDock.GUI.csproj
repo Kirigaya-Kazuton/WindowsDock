@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WindowsDock.GUI</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsDock.DesktopCore\WindowsDock.DesktopCore.csproj" />
+    <ProjectReference Include="..\WindowsDock.Core\WindowsDock.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Resources.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Resources\Resources_pt-BR.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

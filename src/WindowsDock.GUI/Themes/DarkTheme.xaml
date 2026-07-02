@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- macOS Dark Dock colors (Ventura style) -->
+    <Color x:Key="DockBackgroundColor">#CC1C1C1E</Color>
+    <Color x:Key="DockBorderColor">#30FFFFFF</Color>
+    <Color x:Key="DockShadowColor">#80000000</Color>
+    <Color x:Key="HighlightColor">#FF007AFF</Color>
+    <Color x:Key="TextPrimaryColor">#FFFFFFFF</Color>
+    <Color x:Key="TextSecondaryColor">#80FFFFFF</Color>
+    <Color x:Key="SeparatorColor">#60FFFFFF</Color>
+    <Color x:Key="RunningDotColor">#FF007AFF</Color>
+    <Color x:Key="IconBackgroundColor">#00FFFFFF</Color>
+
+    <SolidColorBrush x:Key="DockBackground" Color="{StaticResource DockBackgroundColor}" />
+    <SolidColorBrush x:Key="DockBorder" Color="{StaticResource DockBorderColor}" />
+    <SolidColorBrush x:Key="DockShadow" Color="{StaticResource DockShadowColor}" />
+</ResourceDictionary>

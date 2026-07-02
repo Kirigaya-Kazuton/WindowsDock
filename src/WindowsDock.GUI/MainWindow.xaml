@@ -1,0 +1,146 @@
+<Window x:Class="WindowsDock.GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:WindowsDock.GUI"
+             xmlns:controls="clr-namespace:WindowsDock.GUI.Controls"
+             xmlns:c="clr-namespace:DesktopCore;assembly=DesktopCore"
+        mc:Ignorable="d"
+        Title="WindowsDock"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        Topmost="True"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        x:Name="window"
+        MouseEnter="Window_MouseEnter"
+        MouseLeave="Window_MouseLeave"
+        Drop="Window_Drop"
+        AllowDrop="True"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <!-- Finder icon (smiling face folder) -->
+        <Canvas x:Key="finderIcon" Width="48" Height="48">
+            <Path Fill="{DynamicResource DockBackground}"
+                  Stroke="{DynamicResource TextPrimaryColor}"
+                  StrokeThickness="1.5"
+                  Data="M4,40 L44,40 L44,16 L20,16 L16,10 L4,10 Z" />
+            <Path Fill="{DynamicResource TextPrimaryColor}"
+                  Opacity="0.3"
+                  Data="M4,38 L8,26 L44,26 L40,38 Z" />
+        </Canvas>
+
+        <!-- Trash icon -->
+        <Canvas x:Key="trashIcon" Width="48" Height="48">
+            <Path Stroke="{DynamicResource TextPrimaryColor}"
+                  StrokeThickness="2"
+                  Fill="{DynamicResource DockBackground}"
+                  Data="M14,12 L14,8 L34,8 L34,12 M10,12 L38,12 L36,42 L12,42 Z" />
+            <Line X1="22" Y1="18" X2="22" Y2="36"
+                  Stroke="{DynamicResource TextPrimaryColor}"
+                  StrokeThickness="2" />
+            <Line X1="26" Y1="18" X2="26" Y2="36"
+                  Stroke="{DynamicResource TextPrimaryColor}"
+                  StrokeThickness="2" />
+            <Line X1="30" Y1="18" X2="30" Y2="36"
+                  Stroke="{DynamicResource TextPrimaryColor}"
+                  StrokeThickness="2" />
+            <Line X1="18" Y1="18" X2="18" Y2="36"
+                  Stroke="{DynamicResource TextPrimaryColor}"
+                  StrokeThickness="2" />
+        </Canvas>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Dock shadow (outer glow) -->
+        <Border x:Name="shadowBorder"
+                CornerRadius="16"
+                Margin="0,0,0,4"
+                Background="{DynamicResource DockShadow}"
+                Opacity="0.25"
+                IsHitTestVisible="False" />
+
+        <!-- Main dock background -->
+        <Border x:Name="dockBorder"
+                CornerRadius="14"
+                BorderThickness="0.5"
+                BorderBrush="{DynamicResource DockBorder}">
+
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20"
+                                  Opacity="0.3"
+                                  ShadowDepth="6"
+                                  Color="#000000"
+                                  Direction="270" />
+            </Border.Effect>
+
+            <Border Background="{DynamicResource DockBackground}"
+                    CornerRadius="14">
+                <StackPanel x:Name="mainPanel"
+                            Orientation="Horizontal"
+                            Margin="8,6,8,10">
+
+                    <!-- Left: Finder -->
+                    <Button x:Name="btnFinder"
+                            Style="{StaticResource dockIconButton}"
+                            ToolTip="{c:Resource Main.FolderBrowser}"
+                            Click="btnFinder_Click">
+                        <ContentControl Content="{StaticResource finderIcon}"
+                                        Width="48" Height="48" />
+                    </Button>
+
+                    <!-- Separator -->
+                    <Border Width="1"
+                            Margin="6,4,8,4"
+                            Background="{DynamicResource SeparatorColor}" />
+
+                    <!-- Center: Shortcuts (applications) -->
+                    <ListBox x:Name="shortcutsList"
+                             ItemsSource="{Binding Shortcuts}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             FocusVisualStyle="{x:Null}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <controls:DockIconControl
+                                    Shortcut="{Binding}"
+                                    IconSize="{Binding DataContext.ShortcutIconSize, ElementName=window}"
+                                    MagnificationEnabled="{Binding DataContext.EnableMagnification, ElementName=window}"
+                                    MagnificationFactor="{Binding DataContext.MagnificationFactor, ElementName=window}"
+                                    ReflectionEnabled="{Binding DataContext.EnableReflection, ElementName=window}"
+                                    ReflectionOpacity="{Binding DataContext.ReflectionOpacity, ElementName=window}"
+                                    ShowIndicator="{Binding DataContext.RunIndicatorsEnabled, ElementName=window}"
+                                    Margin="2,0" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Right: Separator + Trash -->
+                    <Border Width="1"
+                            Margin="8,4,6,4"
+                            Background="{DynamicResource SeparatorColor}" />
+
+                    <Button x:Name="btnTrash"
+                            Style="{StaticResource dockIconButton}"
+                            ToolTip="Trash"
+                            Click="btnTrash_Click">
+                        <ContentControl Content="{StaticResource trashIcon}"
+                                        Width="48" Height="48" />
+                    </Button>
+
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
