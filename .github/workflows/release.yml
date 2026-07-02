@@ -1,13 +1,26 @@
 name: Build & Release
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as prerelease'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
-      - 'v*'  # Triggers on tags like v1.0, v2.3.4
+      - 'v*'
 
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -18,40 +31,85 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore dependencies
+      - name: Set version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $ver = "${{ inputs.version }}"
+          } else {
+            $ver = "${{ github.ref_name }}" -replace '^v', ''
+          }
+          echo "version=$ver" >> $env:GITHUB_OUTPUT
+          echo "tag=v$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Restore
         run: dotnet restore src/WindowsDock.GUI/WindowsDock.GUI.csproj
 
-      - name: Build (Release)
+      - name: Build
         run: dotnet build src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release --no-restore
 
       - name: Publish (single-file)
-        run: dotnet publish src/WindowsDock.GUI/WindowsDock.GUI.csproj -c Release -o publish /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --no-build
+        run: |
+          dotnet publish src/WindowsDock.GUI/WindowsDock.GUI.csproj `
+            -c Release -o publish `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true `
+            /p:Version=${{ steps.version.outputs.version }} `
+            --no-build
 
-      - name: Zip artifact
-        run: Compress-Archive -Path publish/* -DestinationPath WindowsDock-${{ github.ref_name }}.zip
+      - name: Create release archive
+        shell: pwsh
+        run: |
+          Compress-Archive -Path publish/* `
+            -DestinationPath WindowsDock-${{ steps.version.outputs.version }}.zip
+
+      - name: Create release notes
+        shell: pwsh
+        run: |
+          $notes = @"
+          ## WindowsDock v${{ steps.version.outputs.version }}
+
+          **macOS-style dock for Windows 10/11**
+
+          ### 📥 Download
+          | File | Description |
+          |------|-------------|
+          | WindowsDock-${{ steps.version.outputs.version }}.zip | Single-file executable (portable) |
+
+          ### ✅ System Requirements
+          - Windows 10 (build 1809+) or Windows 11
+          - No additional runtime required (self-contained)
+
+              ### 🚀 Quick Start
+              1. Download and extract the `.zip`
+              2. Run `WindowsDock.GUI.exe`
+              3. Press **`Win + W`** to toggle the dock
+              4. Drag & drop your apps onto the dock
+
+              ### ✨ Features
+              - Acrylic blur background (glass effect)
+              - Icon magnification on hover (like macOS)
+              - Reflection effect below icons
+              - Running app indicators (blue dot)
+              - Dark/Light mode (auto-detects Windows theme)
+              - Drag & drop to add apps
+              - Global hotkeys (Win+W, Win+Z, Win+X)
+              - Win11 native rounded corners
+              - Per-monitor DPI support
+
+              ### 🔧 Configuration
+              Settings stored in: `%APPDATA%\WindowsDock\config.json`
+          "@
+          $notes | Out-File -FilePath release-notes.md -Encoding UTF8
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: WindowsDock ${{ github.ref_name }}
-          body: |
-            ## WindowsDock ${{ github.ref_name }}
-
-            ### Download
-            - **Windows 10/11**: `WindowsDock-${{ github.ref_name }}.zip`
-
-            ### System Requirements
-            - Windows 10 (build 1809+) or Windows 11
-            - .NET 8 Runtime (included in the single-file publish)
-
-            ### Installation
-            1. Download the `.zip` file
-            2. Extract to a folder (e.g. `C:\Program Files\WindowsDock`)
-            3. Run `WindowsDock.GUI.exe`
-            4. Press `Win+W` to toggle the dock
-
-            ### Changelog
-            See [CHANGELOG](./CHANGELOG.md) for details.
-          files: WindowsDock-${{ github.ref_name }}.zip
-          draft: false
-          prerelease: false
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release create v${{ steps.version.outputs.version }} `
+            --title "WindowsDock v${{ steps.version.outputs.version }}" `
+            --notes-file release-notes.md `
+            --target ${{ github.sha }} `
+            WindowsDock-${{ steps.version.outputs.version }}.zip
