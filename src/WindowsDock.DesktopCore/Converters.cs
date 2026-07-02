@@ -8,12 +8,11 @@ namespace DesktopCore.Data
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value switch
-            {
-                DateTime dt => dt.ToString("g", culture),
-                DateTime? dtn => dtn.HasValue ? dtn.Value.ToString("g", culture) : "",
-                _ => ""
-            };
+            if (value is DateTime dt)
+                return dt.ToString("g", culture);
+            if (value is DateTime? dtn && dtn.HasValue)
+                return dtn.Value.ToString("g", culture);
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -37,12 +36,12 @@ namespace DesktopCore.Data
 
     public class BoolToVisibilityConverter : IValueConverter
     {
-        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is bool b && b ? Visibility.Visible : Visibility.Collapsed;
+            return (value is bool b && b) ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value is Visibility v && v == Visibility.Visible;
         }
