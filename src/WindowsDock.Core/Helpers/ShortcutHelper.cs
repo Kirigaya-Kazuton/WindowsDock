@@ -18,22 +18,15 @@ public static class ShortcutHelper
 
     public static void Run(Shortcut shortcut)
     {
-        try
+        var psi = new ProcessStartInfo
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = shortcut.Path,
-                WorkingDirectory = shortcut.WorkingDirectory,
-                UseShellExecute = true
-            };
-            if (!string.IsNullOrEmpty(shortcut.Args))
-                psi.Arguments = shortcut.Args;
+            FileName = shortcut.Path,
+            WorkingDirectory = shortcut.WorkingDirectory,
+            UseShellExecute = true
+        };
+        if (!string.IsNullOrEmpty(shortcut.Args))
+            psi.Arguments = shortcut.Args;
 
-            Process.Start(psi);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Failed to run {shortcut.Path}: {ex.Message}", "WindowsDock");
-        }
+        Process.Start(psi);
     }
 }

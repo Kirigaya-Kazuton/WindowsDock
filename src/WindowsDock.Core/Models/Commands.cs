@@ -1,10 +1,20 @@
 namespace WindowsDock.Core;
 
-public class Commands : ObservableCollection<Command>
+public class Commands : ObservableCollection<Command>, INotifyPropertyChanged
 {
     private int _defaultIndex;
 
-    public int DefaultIndex { get => _defaultIndex; set { _defaultIndex = value; FirePropertyChanged(nameof(DefaultIndex)); } }
+    public new event PropertyChangedEventHandler? PropertyChanged;
+
+    public int DefaultIndex
+    {
+        get => _defaultIndex;
+        set
+        {
+            _defaultIndex = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DefaultIndex)));
+        }
+    }
 
     public Command? Default
     {
