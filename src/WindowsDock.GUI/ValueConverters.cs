@@ -10,7 +10,7 @@ public class InverseBoolToStringConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return (!(bool)value) ? Resource.Get("Show") : Resource.Get("Hide");
+        return (!(bool)value) ? Resources.Get("Show") : Resources.Get("Hide");
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

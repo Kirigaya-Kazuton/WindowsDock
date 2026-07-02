@@ -1,10 +1,11 @@
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Windows.Markup;
 
 namespace DesktopCore
 {
-    public static class Resource
+    public static class Resources
     {
         private static Dictionary<string, string> _resources = new();
         private static string _basePath = "Resources/Resources";
@@ -55,6 +56,21 @@ namespace DesktopCore
         }
     }
 
+    public class Resource : MarkupExtension
+    {
+        public string Key { get; set; }
+
+        public Resource(string key)
+        {
+            Key = key;
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Resources.Get(Key);
+        }
+    }
+
     [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = false)]
     public class ResourceAttribute : Attribute
     {
@@ -68,7 +84,7 @@ namespace DesktopCore
         {
             var field = value.GetType().GetField(value.ToString());
             var attr = field?.GetCustomAttribute<ResourceAttribute>();
-            return attr != null ? Resource.Get(attr.Key) : value.ToString();
+            return attr != null ? Resources.Get(attr.Key) : value.ToString();
         }
     }
 }

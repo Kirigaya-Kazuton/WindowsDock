@@ -272,7 +272,7 @@ public class Manager : NotifyPropertyChanged, IManager
         // Locale
         try { Locale = new CultureInfo(cfg.Locale); } catch { Locale = CultureInfo.CurrentCulture; }
 
-        Resource.Load("Resources/Resources");
+        Resources.Load("Resources/Resources");
     }
 
     public void Save()

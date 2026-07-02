@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
 using WindowsDock.GUI.Win32;
 
 namespace WindowsDock.GUI.Effects;
@@ -26,7 +27,7 @@ public static class AcrylicHelper
         {
             AccentState = NativeMethods.ACCENT_ENABLE_ACRYLICBLURBEHIND,
             AccentFlags = 2,
-            GradientColor = (byte)(opacity * 255) << 24 | (uint)tintColor.R << 16 | (uint)tintColor.G << 8 | tintColor.B,
+            GradientColor = (int)(((uint)(byte)(opacity * 255) << 24) | ((uint)tintColor.R << 16) | ((uint)tintColor.G << 8) | (uint)tintColor.B),
             AnimationId = 0
         };
 
